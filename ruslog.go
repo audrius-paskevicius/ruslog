@@ -7,12 +7,12 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/Sirupsen/logrus"
+	"github.com/audrius-paskevicius/logrus"
 )
 
 const (
-	ruslogFileName   = "github.com/dogenzaka/ruslog/ruslog.go"
-	appenderFileName = "github.com/dogenzaka/ruslog/appender.go"
+	ruslogFileName   = "github.com/audrius-paskevicius/ruslog/ruslog.go"
+	appenderFileName = "github.com/audrius-paskevicius/ruslog/appender.go"
 )
 
 type (
@@ -264,6 +264,13 @@ func (l *Logger) FatalfSync(options map[string]interface{}, format string, args 
 }
 
 ///
+
+// SetFormatter sets the logger level.
+func (l *Logger) SetFormatter(formatter logrus.Formatter) {
+	l.Lock()
+	defer l.Unlock()
+	l.logrus.Formatter = formatter
+}
 
 // SetLevel sets the logger level.
 func (l *Logger) SetLevel(level logrus.Level) {

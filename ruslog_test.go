@@ -5,7 +5,7 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/Sirupsen/logrus"
+	"github.com/audrius-paskevicius/logrus"
 
 	. "github.com/smartystreets/goconvey/convey"
 )

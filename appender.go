@@ -4,12 +4,12 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/Sirupsen/logrus"
-	"github.com/dogenzaka/rotator"
+	"github.com/audrius-paskevicius/logrus"
+	"github.com/audrius-paskevicius/rotator"
 )
 
 const (
-	APPENDER_DEFAULT = "Default"
+	APPENDER_DEFAULT = "None"
 	APPENDER_SIZE    = "Size"
 	APPENDER_DAILY   = "Daily"
 )
@@ -23,25 +23,20 @@ func defaultAppender(l *Logger) *Logger {
 	log := logrus.New()
 	log.Formatter = Formatters[l.Format].Formatter
 	log.Level = GetLevel(l.Level)
-
 	l.Call = func(level string, options map[string]interface{}, messages []string) {
 		message := strings.Join(messages, " ") // dynamic message
 		CallMethod(l, level, message, options)
 	}
-
 	l.Callf = func(level string, options map[string]interface{}, format string, args ...interface{}) {
 		message := fmt.Sprintf(format, args...) // formatting message
 		CallMethod(l, level, message, options)
 	}
-
 	l.logrus = log
 	return l
 }
 
 func sizeRollingFileAppender(l *Logger) *Logger {
-
 	l = defaultAppender(l)
-
 	o := rotator.NewSizeRotator(l.FilePath)
 	if l.RotationSize > 0 {
 		o.RotationSize = l.RotationSize
@@ -49,7 +44,6 @@ func sizeRollingFileAppender(l *Logger) *Logger {
 	if l.MaxRotation > 0 {
 		o.MaxRotation = l.MaxRotation
 	}
-
 	l.logrus.Out = o
 	return l
 }

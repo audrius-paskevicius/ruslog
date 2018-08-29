@@ -4,14 +4,17 @@ import (
 	"bytes"
 	"fmt"
 	"strings"
+	"time"
 
-	"github.com/Sirupsen/logrus"
+	"github.com/audrius-paskevicius/logrus"
 )
+
+const defaultTimestampFormat = time.RFC3339
 
 const (
 	// formatter types
 	FORMATTER_SIMPLE = "Simple"
-	FORMATTER_JSON   = "Json"
+	FORMATTER_JSON   = "JSON"
 	FORMATTER_TEXT   = "Text"
 )
 
@@ -21,13 +24,21 @@ type (
 		Formatter logrus.Formatter
 	}
 
-	SimpleFormatter struct{}
+	SimpleFormatter struct {
+		// TimestampFormat sets the format used for marshaling timestamps.
+		TimestampFormat string
+	}
 )
 
 func (f *SimpleFormatter) Format(entry *logrus.Entry) ([]byte, error) {
 	b := &bytes.Buffer{}
 
-	fmt.Fprintf(b, "[%s]", entry.Time.String())
+	timestampFormat := f.TimestampFormat
+	if timestampFormat == "" {
+		timestampFormat = defaultTimestampFormat
+	}
+
+	fmt.Fprintf(b, "[%s]", entry.Time.Format(timestampFormat))
 	fmt.Fprintf(b, " [%s]", strings.ToUpper(entry.Level.String()))
 	fmt.Fprintf(b, " %s", entry.Message)
 
